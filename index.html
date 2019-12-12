@@ -55,7 +55,9 @@
 
           this.state = {
             data: data,
-            color: '#cd2327',
+            color: '#5020ee',
+            overColor: '#ff3366',
+            workingTime: 10,
             overview: 'year',
           }
         }
@@ -69,6 +71,8 @@
             <CalendarHeatmap
               data={this.state.data}
               color={this.state.color}
+              overColor={this.state.overColor}
+              workingTime={this.state.workingTime}
               overview={this.state.overview}
               handler={this.print.bind(this)}>
             </CalendarHeatmap>

@@ -333,35 +333,33 @@ var CalendarHeatmap = function (_React$Component) {
 
       // Add global data items to the overview
       this.items.selectAll('.item-block-year').remove();
-      var item_block = this.items.selectAll('.item-block-year').data(year_data).enter().append('rect').attr('class', 'item item-block-year').style('cursor', 'pointer').attr('width', function () {
+      var item_block = this.items.selectAll('.item-block-year').data(year_data).enter().append('rect').attr('class', 'item item-block-year').style('cursor', 'default').attr('width', function () {
         return (_this2.settings.width - _this2.settings.label_padding) / year_labels.length - _this2.settings.gutter * 5;
       }).attr('height', function () {
         return _this2.settings.height - _this2.settings.label_padding;
       }).attr('transform', function (d) {
         return 'translate(' + yearScale(d.date.year()) + ',' + _this2.settings.tooltip_padding * 2 + ')';
-      }).attr('fill', function (d) {
-        var color = d3.scaleLinear().range(['#ffffff', _this2.props.color]).domain([-0.15 * max_value, max_value]);
-        return color(d.total) || '#ff4500';
+      });
+      attr('fill', function (d) {
+        return d.total > _this2.props.workingTime * 60 * 60 ? overColor(d.total) : d.total === 0 ? 'transparent' : color(d.total);
       }).on('click', function (d) {
-        if (_this2.in_transition) {
-          return;
-        }
-
-        // Set in_transition flag
-        _this2.in_transition = true;
-
-        // Set selected date to the one clicked on
-        _this2.selected = d;
-
-        // Hide tooltip
-        _this2.hideTooltip();
-
-        // Remove all global overview related items and labels
-        _this2.removeGlobalOverview();
-
-        // Redraw the chart
-        _this2.overview = 'year';
-        _this2.drawChart();
+        // if (this.in_transition) { return }
+        //
+        // // Set in_transition flag
+        // this.in_transition = true
+        //
+        // // Set selected date to the one clicked on
+        // this.selected = d
+        //
+        // // Hide tooltip
+        // this.hideTooltip()
+        //
+        // // Remove all global overview related items and labels
+        // this.removeGlobalOverview()
+        //
+        // // Redraw the chart
+        // this.overview = 'year'
+        // this.drawChart()
       }).style('opacity', 0).on('mouseover', function (d) {
         if (_this2.in_transition) {
           return;
@@ -458,7 +456,7 @@ var CalendarHeatmap = function (_React$Component) {
 
       // Add year labels
       this.labels.selectAll('.label-year').remove();
-      this.labels.selectAll('.label-year').data(year_labels).enter().append('text').attr('class', 'label label-year').style('cursor', 'pointer').style('fill', 'rgb(170, 170, 170)').attr('font-size', function () {
+      this.labels.selectAll('.label-year').data(year_labels).enter().append('text').attr('class', 'label label-year').style('cursor', 'default').style('fill', 'rgb(170, 170, 170)').attr('font-size', function () {
         return Math.floor(_this2.settings.label_padding / 3) + 'px';
       }).text(function (d) {
         return d.year();
@@ -479,25 +477,23 @@ var CalendarHeatmap = function (_React$Component) {
 
         _this2.items.selectAll('.item-block-year').transition().duration(_this2.settings.transition_duration).ease(d3.easeLinear).style('opacity', 1);
       }).on('click', function (d) {
-        if (_this2.in_transition) {
-          return;
-        }
-
-        // Set in_transition flag
-        _this2.in_transition = true;
-
-        // Set selected year to the one clicked on
-        _this2.selected = { date: d
-
-          // Hide tooltip
-        };_this2.hideTooltip();
-
-        // Remove all global overview related items and labels
-        _this2.removeGlobalOverview();
-
-        // Redraw the chart
-        _this2.overview = 'year';
-        _this2.drawChart();
+        // if (this.in_transition) { return }
+        //
+        // // Set in_transition flag
+        // this.in_transition = true
+        //
+        // // Set selected year to the one clicked on
+        // this.selected = { date: d }
+        //
+        // // Hide tooltip
+        // this.hideTooltip()
+        //
+        // // Remove all global overview related items and labels
+        // this.removeGlobalOverview()
+        //
+        // // Redraw the chart
+        // this.overview = 'year'
+        // this.drawChart()
       });
     }
 
@@ -529,7 +525,9 @@ var CalendarHeatmap = function (_React$Component) {
         return d.total;
       });
 
-      var color = d3.scaleLinear().range(['#ffffff', this.props.color]).domain([-0.15 * max_value, max_value]);
+      var color = d3.scaleLinear().range(['#ffffff', this.props.color]).domain([-0.15 * max_value / this.props.workingTime, max_value / this.props.workingTime]);
+
+      var overColor = d3.scaleLinear().range(['#ffffff', this.props.overColor]).domain([-0.15 * this.props.workingTime * max_value, max_value]);
 
       var calcItemX = function calcItemX(d) {
         var date = (0, _moment2.default)(d.date);
@@ -550,7 +548,7 @@ var CalendarHeatmap = function (_React$Component) {
       };
 
       this.items.selectAll('.item-circle').remove();
-      this.items.selectAll('.item-circle').data(year_data).enter().append('rect').attr('class', 'item item-circle').style('cursor', 'pointer').style('opacity', 0).attr('x', function (d) {
+      this.items.selectAll('.item-circle').data(year_data).enter().append('rect').attr('class', 'item item-circle').style('cursor', 'default').style('opacity', 0).attr('x', function (d) {
         return calcItemX(d) + (_this3.settings.item_size - calcItemSize(d)) / 2;
       }).attr('y', function (d) {
         return calcItemY(d) + (_this3.settings.item_size - calcItemSize(d)) / 2;
@@ -563,31 +561,27 @@ var CalendarHeatmap = function (_React$Component) {
       }).attr('height', function (d) {
         return calcItemSize(d);
       }).attr('fill', function (d) {
-        return d.total > 0 ? color(d.total) : 'transparent';
+        return d.total > _this3.props.workingTime * 60 * 60 ? overColor(d.total) : d.total === 0 ? 'transparent' : color(d.total);
       }).on('click', function (d) {
-        if (_this3.in_transition) {
-          return;
-        }
-
-        // Don't transition if there is no data to show
-        if (d.total === 0) {
-          return;
-        }
-
-        _this3.in_transition = true;
-
-        // Set selected date to the one clicked on
-        _this3.selected = d;
-
-        // Hide tooltip
-        _this3.hideTooltip();
-
-        // Remove all year overview related items and labels
-        _this3.removeYearOverview();
-
-        // Redraw the chart
-        _this3.overview = 'day';
-        _this3.drawChart();
+        // if (this.in_transition) { return }
+        //
+        // // Don't transition if there is no data to show
+        // if (d.total === 0) { return }
+        //
+        // this.in_transition = true
+        //
+        // // Set selected date to the one clicked on
+        // this.selected = d
+        //
+        // // Hide tooltip
+        // this.hideTooltip()
+        //
+        // // Remove all year overview related items and labels
+        // this.removeYearOverview()
+        //
+        // // Redraw the chart
+        // this.overview = 'day'
+        // this.drawChart()
       }).on('mouseover', function (d) {
         if (_this3.in_transition) {
           return;
@@ -676,7 +670,7 @@ var CalendarHeatmap = function (_React$Component) {
       var month_labels = d3.timeMonths(start_of_year, end_of_year);
       var monthScale = d3.scaleLinear().range([0, this.settings.width]).domain([0, month_labels.length]);
       this.labels.selectAll('.label-month').remove();
-      this.labels.selectAll('.label-month').data(month_labels).enter().append('text').attr('class', 'label label-month').style('cursor', 'pointer').style('fill', 'rgb(170, 170, 170)').attr('font-size', function () {
+      this.labels.selectAll('.label-month').data(month_labels).enter().append('text').attr('class', 'label label-month').style('cursor', 'default').style('fill', 'rgb(170, 170, 170)').attr('font-size', function () {
         return Math.floor(_this3.settings.label_padding / 3) + 'px';
       }).text(function (d) {
         return d.toLocaleDateString('en-us', { month: 'short' });
@@ -698,34 +692,30 @@ var CalendarHeatmap = function (_React$Component) {
 
         _this3.items.selectAll('.item-circle').transition().duration(_this3.settings.transition_duration).ease(d3.easeLinear).style('opacity', 1);
       }).on('click', function (d) {
-        if (_this3.in_transition) {
-          return;
-        }
-
-        // Check month data
-        var month_data = _this3.props.data.filter(function (e) {
-          return (0, _moment2.default)(d).startOf('month') <= (0, _moment2.default)(e.date) && (0, _moment2.default)(e.date) < (0, _moment2.default)(d).endOf('month');
-        });
-
-        // Don't transition if there is no data to show
-        if (!month_data.length) {
-          return;
-        }
-
-        // Set selected month to the one clicked on
-        _this3.selected = { date: d };
-
-        _this3.in_transition = true;
-
-        // Hide tooltip
-        _this3.hideTooltip();
-
-        // Remove all year overview related items and labels
-        _this3.removeYearOverview();
-
-        // Redraw the chart
-        _this3.overview = 'month';
-        _this3.drawChart();
+        // if (this.in_transition) { return }
+        //
+        // // Check month data
+        // let month_data = this.props.data.filter(e => {
+        //   return moment(d).startOf('month') <= moment(e.date) && moment(e.date) < moment(d).endOf('month')
+        // })
+        //
+        // // Don't transition if there is no data to show
+        // if (!month_data.length) { return }
+        //
+        // // Set selected month to the one clicked on
+        // this.selected = { date: d }
+        //
+        // this.in_transition = true
+        //
+        // // Hide tooltip
+        // this.hideTooltip()
+        //
+        // // Remove all year overview related items and labels
+        // this.removeYearOverview()
+        //
+        // // Redraw the chart
+        // this.overview = 'month'
+        // this.drawChart()
       });
 
       // Add day labels
@@ -734,7 +724,7 @@ var CalendarHeatmap = function (_React$Component) {
         return (0, _moment2.default)(d).weekday();
       }));
       this.labels.selectAll('.label-day').remove();
-      this.labels.selectAll('.label-day').data(day_labels).enter().append('text').attr('class', 'label label-day').style('cursor', 'pointer').style('fill', 'rgb(170, 170, 170)').attr('x', this.settings.label_padding / 3).attr('y', function (d, i) {
+      this.labels.selectAll('.label-day').data(day_labels).enter().append('text').attr('class', 'label label-day').style('cursor', 'default').style('fill', 'rgb(170, 170, 170)').attr('x', this.settings.label_padding / 3).attr('y', function (d, i) {
         return dayScale(i) + dayScale.bandwidth() / 1.75;
       }).style('text-anchor', 'left').attr('font-size', function () {
         return Math.floor(_this3.settings.label_padding / 3) + 'px';
@@ -806,7 +796,7 @@ var CalendarHeatmap = function (_React$Component) {
 
       // Add month data items to the overview
       this.items.selectAll('.item-block-month').remove();
-      var item_block = this.items.selectAll('.item-block-month').data(month_data).enter().append('g').attr('class', 'item item-block-month').style('cursor', 'pointer').attr('width', function () {
+      var item_block = this.items.selectAll('.item-block-month').data(month_data).enter().append('g').attr('class', 'item item-block-month').style('cursor', 'default').attr('width', function () {
         return (_this4.settings.width - _this4.settings.label_padding) / week_labels.length - _this4.settings.gutter * 5;
       }).attr('height', function () {
         return Math.min(dayScale.bandwidth(), _this4.settings.max_block_height);
@@ -817,29 +807,25 @@ var CalendarHeatmap = function (_React$Component) {
       }).attr('date', function (d) {
         return d.date;
       }).attr('offset', 0).on('click', function (d) {
-        if (_this4.in_transition) {
-          return;
-        }
-
-        // Don't transition if there is no data to show
-        if (d.total === 0) {
-          return;
-        }
-
-        _this4.in_transition = true;
-
-        // Set selected date to the one clicked on
-        _this4.selected = d;
-
-        // Hide tooltip
-        _this4.hideTooltip();
-
-        // Remove all month overview related items and labels
-        _this4.removeMonthOverview();
-
-        // Redraw the chart
-        _this4.overview = 'day';
-        _this4.drawChart();
+        // if (this.in_transition) { return }
+        //
+        // // Don't transition if there is no data to show
+        // if (d.total === 0) { return }
+        //
+        // this.in_transition = true
+        //
+        // // Set selected date to the one clicked on
+        // this.selected = d
+        //
+        // // Hide tooltip
+        // this.hideTooltip()
+        //
+        // // Remove all month overview related items and labels
+        // this.removeMonthOverview()
+        //
+        // // Redraw the chart
+        // this.overview = 'day'
+        // this.drawChart()
       });
 
       var item_width = (this.settings.width - this.settings.label_padding) / week_labels.length - this.settings.gutter * 5;
@@ -848,7 +834,7 @@ var CalendarHeatmap = function (_React$Component) {
       var item_gutter = this.settings.item_gutter;
       item_block.selectAll('.item-block-rect').data(function (d) {
         return d.summary;
-      }).enter().append('rect').attr('class', 'item item-block-rect').style('cursor', 'pointer').attr('x', function (d) {
+      }).enter().append('rect').attr('class', 'item item-block-rect').style('cursor', 'default').attr('x', function (d) {
         var total = parseInt(d3.select(this.parentNode).attr('total'));
         var offset = parseInt(d3.select(this.parentNode).attr('offset'));
         itemScale.domain([0, total]);
@@ -860,9 +846,9 @@ var CalendarHeatmap = function (_React$Component) {
         return Math.max(itemScale(d.value) - item_gutter, 1);
       }).attr('height', function () {
         return Math.min(dayScale.bandwidth(), _this4.settings.max_block_height);
-      }).attr('fill', function (d) {
-        var color = d3.scaleLinear().range(['#ffffff', _this4.props.color]).domain([-0.15 * max_value, max_value]);
-        return color(d.value) || '#ff4500';
+      });
+      attr('fill', function (d) {
+        return d.total > _this4.props.workingTime * 60 * 60 ? overColor(d.total) : d.total === 0 ? 'transparent' : color(d.total);
       }).style('opacity', 0).on('mouseover', function (d) {
         if (_this4.in_transition) {
           return;
@@ -914,7 +900,7 @@ var CalendarHeatmap = function (_React$Component) {
 
       // Add week labels
       this.labels.selectAll('.label-week').remove();
-      this.labels.selectAll('.label-week').data(week_labels).enter().append('text').attr('class', 'label label-week').style('cursor', 'pointer').style('fill', 'rgb(170, 170, 170)').attr('font-size', function () {
+      this.labels.selectAll('.label-week').data(week_labels).enter().append('text').attr('class', 'label label-week').style('cursor', 'default').style('fill', 'rgb(170, 170, 170)').attr('font-size', function () {
         return Math.floor(_this4.settings.label_padding / 3) + 'px';
       }).text(function (d) {
         return 'Week ' + d.week();
@@ -935,39 +921,35 @@ var CalendarHeatmap = function (_React$Component) {
 
         _this4.items.selectAll('.item-block-month').transition().duration(_this4.settings.transition_duration).ease(d3.easeLinear).style('opacity', 1);
       }).on('click', function (d) {
-        if (_this4.in_transition) {
-          return;
-        }
-
-        // Check week data
-        var week_data = _this4.props.data.filter(function (e) {
-          return d.startOf('week') <= (0, _moment2.default)(e.date) && (0, _moment2.default)(e.date) < d.endOf('week');
-        });
-
-        // Don't transition if there is no data to show
-        if (!week_data.length) {
-          return;
-        }
-
-        _this4.in_transition = true;
-
-        // Set selected month to the one clicked on
-        _this4.selected = { date: d
-
-          // Hide tooltip
-        };_this4.hideTooltip();
-
-        // Remove all year overview related items and labels
-        _this4.removeMonthOverview();
-
-        // Redraw the chart
-        _this4.overview = 'week';
-        _this4.drawChart();
+        // if (this.in_transition) { return }
+        //
+        // // Check week data
+        // let week_data = this.props.data.filter(e => {
+        //   return d.startOf('week') <= moment(e.date) && moment(e.date) < d.endOf('week')
+        // })
+        //
+        // // Don't transition if there is no data to show
+        // if (!week_data.length) { return }
+        //
+        // this.in_transition = true
+        //
+        // // Set selected month to the one clicked on
+        // this.selected = { date: d }
+        //
+        // // Hide tooltip
+        // this.hideTooltip()
+        //
+        // // Remove all year overview related items and labels
+        // this.removeMonthOverview()
+        //
+        // // Redraw the chart
+        // this.overview = 'week'
+        // this.drawChart()
       });
 
       // Add day labels
       this.labels.selectAll('.label-day').remove();
-      this.labels.selectAll('.label-day').data(day_labels).enter().append('text').attr('class', 'label label-day').style('cursor', 'pointer').style('fill', 'rgb(170, 170, 170)').attr('x', this.settings.label_padding / 3).attr('y', function (d, i) {
+      this.labels.selectAll('.label-day').data(day_labels).enter().append('text').attr('class', 'label label-day').style('cursor', 'default').style('fill', 'rgb(170, 170, 170)').attr('x', this.settings.label_padding / 3).attr('y', function (d, i) {
         return dayScale(i) + dayScale.bandwidth() / 1.75;
       }).style('text-anchor', 'left').attr('font-size', function () {
         return Math.floor(_this4.settings.label_padding / 3) + 'px';
@@ -1036,7 +1018,7 @@ var CalendarHeatmap = function (_React$Component) {
 
       // Add week data items to the overview
       this.items.selectAll('.item-block-week').remove();
-      var item_block = this.items.selectAll('.item-block-week').data(week_data).enter().append('g').attr('class', 'item item-block-week').style('cursor', 'pointer').attr('width', function () {
+      var item_block = this.items.selectAll('.item-block-week').data(week_data).enter().append('g').attr('class', 'item item-block-week').style('cursor', 'default').attr('width', function () {
         return (_this5.settings.width - _this5.settings.label_padding) / week_labels.length - _this5.settings.gutter * 5;
       }).attr('height', function () {
         return Math.min(dayScale.bandwidth(), _this5.settings.max_block_height);
@@ -1047,29 +1029,25 @@ var CalendarHeatmap = function (_React$Component) {
       }).attr('date', function (d) {
         return d.date;
       }).attr('offset', 0).on('click', function (d) {
-        if (_this5.in_transition) {
-          return;
-        }
-
-        // Don't transition if there is no data to show
-        if (d.total === 0) {
-          return;
-        }
-
-        _this5.in_transition = true;
-
-        // Set selected date to the one clicked on
-        _this5.selected = d;
-
-        // Hide tooltip
-        _this5.hideTooltip();
-
-        // Remove all week overview related items and labels
-        _this5.removeWeekOverview();
-
-        // Redraw the chart
-        _this5.overview = 'day';
-        _this5.drawChart();
+        // if (this.in_transition) { return }
+        //
+        // // Don't transition if there is no data to show
+        // if (d.total === 0) { return }
+        //
+        // this.in_transition = true
+        //
+        // // Set selected date to the one clicked on
+        // this.selected = d
+        //
+        // // Hide tooltip
+        // this.hideTooltip()
+        //
+        // // Remove all week overview related items and labels
+        // this.removeWeekOverview()
+        //
+        // // Redraw the chart
+        // this.overview = 'day'
+        // this.drawChart()
       });
 
       var item_width = (this.settings.width - this.settings.label_padding) / week_labels.length - this.settings.gutter * 5;
@@ -1078,7 +1056,7 @@ var CalendarHeatmap = function (_React$Component) {
       var item_gutter = this.settings.item_gutter;
       item_block.selectAll('.item-block-rect').data(function (d) {
         return d.summary;
-      }).enter().append('rect').attr('class', 'item item-block-rect').style('cursor', 'pointer').attr('x', function (d) {
+      }).enter().append('rect').attr('class', 'item item-block-rect').style('cursor', 'default').attr('x', function (d) {
         var total = parseInt(d3.select(this.parentNode).attr('total'));
         var offset = parseInt(d3.select(this.parentNode).attr('offset'));
         itemScale.domain([0, total]);
@@ -1090,9 +1068,9 @@ var CalendarHeatmap = function (_React$Component) {
         return Math.max(itemScale(d.value) - item_gutter, 1);
       }).attr('height', function () {
         return Math.min(dayScale.bandwidth(), _this5.settings.max_block_height);
-      }).attr('fill', function (d) {
-        var color = d3.scaleLinear().range(['#ffffff', _this5.props.color]).domain([-0.15 * max_value, max_value]);
-        return color(d.value) || '#ff4500';
+      });
+      attr('fill', function (d) {
+        return d.total > _this5.props.workingTime * 60 * 60 ? overColor(d.total) : d.total === 0 ? 'transparent' : color(d.total);
       }).style('opacity', 0).on('mouseover', function (d) {
         if (_this5.in_transition) {
           return;
@@ -1146,7 +1124,7 @@ var CalendarHeatmap = function (_React$Component) {
 
       // Add week labels
       this.labels.selectAll('.label-week').remove();
-      this.labels.selectAll('.label-week').data(week_labels).enter().append('text').attr('class', 'label label-week').style('cursor', 'pointer').style('fill', 'rgb(170, 170, 170)').attr('font-size', function () {
+      this.labels.selectAll('.label-week').data(week_labels).enter().append('text').attr('class', 'label label-week').style('cursor', 'default').style('fill', 'rgb(170, 170, 170)').attr('font-size', function () {
         return Math.floor(_this5.settings.label_padding / 3) + 'px';
       }).text(function (d) {
         return 'Week ' + d.week();
@@ -1170,7 +1148,7 @@ var CalendarHeatmap = function (_React$Component) {
 
       // Add day labels
       this.labels.selectAll('.label-day').remove();
-      this.labels.selectAll('.label-day').data(day_labels).enter().append('text').attr('class', 'label label-day').style('cursor', 'pointer').style('fill', 'rgb(170, 170, 170)').attr('x', this.settings.label_padding / 3).attr('y', function (d, i) {
+      this.labels.selectAll('.label-day').data(day_labels).enter().append('text').attr('class', 'label label-day').style('cursor', 'default').style('fill', 'rgb(170, 170, 170)').attr('x', this.settings.label_padding / 3).attr('y', function (d, i) {
         return dayScale(i) + dayScale.bandwidth() / 1.75;
       }).style('text-anchor', 'left').attr('font-size', function () {
         return Math.floor(_this5.settings.label_padding / 3) + 'px';
@@ -1223,7 +1201,7 @@ var CalendarHeatmap = function (_React$Component) {
 
       var itemScale = d3.scaleTime().range([this.settings.label_padding * 2, this.settings.width]).domain([(0, _moment2.default)(this.selected.date).startOf('day'), (0, _moment2.default)(this.selected.date).endOf('day')]);
       this.items.selectAll('.item-block').remove();
-      this.items.selectAll('.item-block').data(this.selected.details).enter().append('rect').attr('class', 'item item-block').style('cursor', 'pointer').attr('x', function (d) {
+      this.items.selectAll('.item-block').data(this.selected.details).enter().append('rect').attr('class', 'item item-block').style('cursor', 'default').attr('x', function (d) {
         return itemScale((0, _moment2.default)(d.date));
       }).attr('y', function (d) {
         return projectScale(d.name) + projectScale.bandwidth() / 2 - 15;
@@ -1260,9 +1238,9 @@ var CalendarHeatmap = function (_React$Component) {
         }
         _this6.hideTooltip();
       }).on('click', function (d) {
-        if (!!_this6.props.handler && typeof _this6.props.handler == 'function') {
-          _this6.props.handler(d);
-        }
+        // if (!!this.props.handler && typeof this.props.handler == 'function') {
+        //   this.props.handler(d)
+        // }
       }).transition().delay(function () {
         return (Math.cos(Math.PI * Math.random()) + 1) * _this6.settings.transition_duration;
       }).duration(function () {
@@ -1287,7 +1265,7 @@ var CalendarHeatmap = function (_React$Component) {
       var timeLabels = d3.timeHours((0, _moment2.default)(this.selected.date).startOf('day'), (0, _moment2.default)(this.selected.date).endOf('day'));
       var timeScale = d3.scaleTime().range([this.settings.label_padding * 2, this.settings.width]).domain([0, timeLabels.length]);
       this.labels.selectAll('.label-time').remove();
-      this.labels.selectAll('.label-time').data(timeLabels).enter().append('text').attr('class', 'label label-time').style('cursor', 'pointer').style('fill', 'rgb(170, 170, 170)').attr('font-size', function () {
+      this.labels.selectAll('.label-time').data(timeLabels).enter().append('text').attr('class', 'label label-time').style('cursor', 'default').style('fill', 'rgb(170, 170, 170)').attr('font-size', function () {
         return Math.floor(_this6.settings.label_padding / 3) + 'px';
       }).text(function (d) {
         return (0, _moment2.default)(d).format('HH:mm');
@@ -1315,7 +1293,7 @@ var CalendarHeatmap = function (_React$Component) {
       // Add project labels
       var label_padding = this.settings.label_padding;
       this.labels.selectAll('.label-project').remove();
-      this.labels.selectAll('.label-project').data(project_labels).enter().append('text').attr('class', 'label label-project').style('cursor', 'pointer').style('fill', 'rgb(170, 170, 170)').attr('x', this.settings.gutter).attr('y', function (d) {
+      this.labels.selectAll('.label-project').data(project_labels).enter().append('text').attr('class', 'label label-project').style('cursor', 'default').style('fill', 'rgb(170, 170, 170)').attr('x', this.settings.gutter).attr('y', function (d) {
         return projectScale(d) + projectScale.bandwidth() / 2;
       }).attr('min-height', function () {
         return projectScale.bandwidth();
@@ -1362,29 +1340,27 @@ var CalendarHeatmap = function (_React$Component) {
       var _this7 = this;
 
       this.buttons.selectAll('.button').remove();
-      var button = this.buttons.append('g').attr('class', 'button button-back').style('cursor', 'pointer').attr('fill', 'transparent').style('opacity', 0).style('stroke-width', 2).style('stroke', 'rgb(170, 170, 170)').on('click', function () {
-        if (_this7.in_transition) {
-          return;
-        }
-
-        // Set transition boolean
-        _this7.in_transition = true;
-
-        // Clean the canvas from whichever overview type was on
-        if (_this7.overview === 'year') {
-          _this7.removeYearOverview();
-        } else if (_this7.overview === 'month') {
-          _this7.removeMonthOverview();
-        } else if (_this7.overview === 'week') {
-          _this7.removeWeekOverview();
-        } else if (_this7.overview === 'day') {
-          _this7.removeDayOverview();
-        }
-
-        // Redraw the chart
-        _this7.history.pop();
-        _this7.overview = _this7.history.pop();
-        _this7.drawChart();
+      var button = this.buttons.append('g').attr('class', 'button button-back').style('cursor', 'default').attr('fill', 'transparent').style('opacity', 0).style('stroke-width', 2).style('display', 'none').style('stroke', 'rgb(170, 170, 170)').on('click', function () {
+        // if (this.in_transition) { return }
+        //
+        // // Set transition boolean
+        // this.in_transition = true
+        //
+        // // Clean the canvas from whichever overview type was on
+        // if (this.overview === 'year') {
+        //   this.removeYearOverview()
+        // } else if (this.overview === 'month') {
+        //   this.removeMonthOverview()
+        // } else if (this.overview === 'week') {
+        //   this.removeWeekOverview()
+        // } else if (this.overview === 'day') {
+        //   this.removeDayOverview()
+        // }
+        //
+        // // Redraw the chart
+        // this.history.pop()
+        // this.overview = this.history.pop()
+        // this.drawChart()
       });
       button.append('circle').attr('cx', this.settings.label_padding / 2.25).attr('cy', this.settings.label_padding / 2.5).attr('r', this.settings.item_size / 2);
       button.append('text').style('stroke-width', 1).style('text-anchor', 'middle').style('fill', 'rgb(170, 170, 170)').attr('x', this.settings.label_padding / 2.25).attr('y', this.settings.label_padding / 2.5).attr('dy', function () {
@@ -1532,6 +1508,8 @@ CalendarHeatmap.defaultProps = {
   data: [],
   overview: 'year',
   color: '#ff4500',
+  overColor: '#00ff00',
+  workingTime: 10,
   handler: undefined
 };
 
