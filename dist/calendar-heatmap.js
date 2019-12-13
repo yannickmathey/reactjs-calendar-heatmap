@@ -188,7 +188,7 @@ var CalendarHeatmap = function (_React$Component) {
       this.buttons = this.svg.append('g');
 
       // Add tooltip to the same element as main svg
-      this.tooltip = d3.select('#calendar-heatmap').append('div').attr('class', _calendarHeatmap2.default.heatmapTooltip).style('opacity', 0).style('pointer-events', 'none').style('position', 'absolute').style('z-index', 9999).style('width', '250px').style('max-width', '250px').style('overflow', 'hidden').style('padding', '15px').style('font-size', '12px').style('line-height', '14px').style('color', 'rgb(51, 51, 51)').style('background', 'rgba(255, 255, 255, 0.75)');
+      this.tooltip = d3.select('#calendar-heatmap').append('div').attr('class', _calendarHeatmap2.default.heatmapTooltip).style('opacity', 0).style('pointer-events', 'none').style('position', 'absolute').style('z-index', 9999).style('width', '250px').style('max-width', '500px').style('overflow', 'hidden').style('padding', '15px').style('font-size', '12px').style('line-height', '1.2').style('border-radius', '8px').style('box-shadow', '0 0 10px rgb(151, 151, 151)').style('color', 'rgb(51, 51, 51)').style('background', 'rgba(255, 255, 255, 0.85)');
 
       this.calcDimensions();
     }
@@ -367,19 +367,19 @@ var CalendarHeatmap = function (_React$Component) {
 
         // Construct tooltip
         var tooltip_html = '';
-        tooltip_html += '<div><span><strong>Total time tracked:</strong></span>';
+        tooltip_html += '<div><span><strong>Total temps travaillé :</strong></span>';
 
         var sec = parseInt(d.total, 10);
         var days = Math.floor(sec / 86400);
         if (days > 0) {
-          tooltip_html += '<span>' + (days === 1 ? '1 day' : days + ' days') + '</span></div>';
+          tooltip_html += '<span>' + (days === 1 ? '1 jour' : days + ' jours') + '</span></div>';
         }
         var hours = Math.floor((sec - days * 86400) / 3600);
         if (hours > 0) {
           if (days > 0) {
-            tooltip_html += '<div><span></span><span>' + (hours === 1 ? '1 hour' : hours + ' hours') + '</span></div>';
+            tooltip_html += '<div><span></span><span>' + (hours === 1 ? '1 heure' : hours + ' heures') + '</span></div>';
           } else {
-            tooltip_html += '<span>' + (hours === 1 ? '1 hour' : hours + ' hours') + '</span></div>';
+            tooltip_html += '<span>' + (hours === 1 ? '1 heure' : hours + ' heures') + '</span></div>';
           }
         }
         var minutes = Math.floor((sec - days * 86400 - hours * 3600) / 60);
@@ -416,7 +416,7 @@ var CalendarHeatmap = function (_React$Component) {
             other_projects_sum = +d.summary[_counter].value;
             _counter++;
           }
-          tooltip_html += '<div><span><strong>Other:</strong></span>';
+          tooltip_html += '<div><span><strong>Autres :</strong></span>';
           tooltip_html += '<span>' + _this2.formatTime(other_projects_sum) + '</span></div>';
         }
 
@@ -525,9 +525,9 @@ var CalendarHeatmap = function (_React$Component) {
         return d.total;
       });
 
-      var color = d3.scaleLinear().range(['#ffffff', this.props.color]).domain([-0.15 * max_value / this.props.workingTime, max_value / this.props.workingTime]);
+      var color = d3.scaleLinear().range(['#ffffff', this.props.color]).domain([-0.15, this.props.workingTime * 36 * 36]);
 
-      var overColor = d3.scaleLinear().range(['#ffffff', this.props.overColor]).domain([-0.15 * this.props.workingTime * max_value, max_value]);
+      var overColor = d3.scaleLinear().range([this.props.color, this.props.overColor]).domain([this.props.workingTime * 36 * 36, max_value]);
 
       var calcItemX = function calcItemX(d) {
         var date = (0, _moment2.default)(d.date);
@@ -608,8 +608,8 @@ var CalendarHeatmap = function (_React$Component) {
 
         // Construct tooltip
         var tooltip_html = '';
-        tooltip_html += '<div class="' + _calendarHeatmap2.default.header + '"><strong>' + (d.total ? _this3.formatTime(d.total) : 'No time') + ' tracked</strong></div>';
-        tooltip_html += '<div>on ' + (0, _moment2.default)(d.date).format('dddd, MMM Do YYYY') + '</div><br>';
+        tooltip_html += '<div class="' + _calendarHeatmap2.default.header + '"><strong>' + (d.total ? _this3.formatTime(d.total) : 'Aucune données') + ' travaill\xE9es</strong></div>';
+        tooltip_html += '<div>' + (0, _moment2.default)(d.date).format('dddd, Do MMM YYYY') + '</div><br>';
 
         // Add summary to the tooltip
         var counter = 0;
@@ -848,7 +848,7 @@ var CalendarHeatmap = function (_React$Component) {
         return Math.min(dayScale.bandwidth(), _this4.settings.max_block_height);
       });
       attr('fill', function (d) {
-        return d.total > _this4.props.workingTime * 60 * 60 ? overColor(d.total) : d.total === 0 ? 'transparent' : color(d.total);
+        return d.total > _this4.props.workingTime * 60 * 60 ? overColor(d.total) : d.total === 0 ? 'fefefe' : color(d.total);
       }).style('opacity', 0).on('mouseover', function (d) {
         if (_this4.in_transition) {
           return;
@@ -861,8 +861,8 @@ var CalendarHeatmap = function (_React$Component) {
         // Construct tooltip
         var tooltip_html = '';
         tooltip_html += '<div class="' + _calendarHeatmap2.default.header + '"><strong>' + d.name + '</strong></div><br>';
-        tooltip_html += '<div><strong>' + (d.value ? _this4.formatTime(d.value) : 'No time') + ' tracked</strong></div>';
-        tooltip_html += '<div>on ' + (0, _moment2.default)(date).format('dddd, MMM Do YYYY') + '</div>';
+        tooltip_html += '<div><strong>' + (d.value ? _this4.formatTime(d.value) : 'Aucune donnée') + ' travaillées</strong></div>';
+        tooltip_html += '<div>on ' + (0, _moment2.default)(date).format('dddd, Do MMM YYYY') + '</div>';
 
         // Calculate tooltip position
         var x = weekScale((0, _moment2.default)(date).week()) + _this4.settings.tooltip_padding;
@@ -1083,8 +1083,8 @@ var CalendarHeatmap = function (_React$Component) {
         // Construct tooltip
         var tooltip_html = '';
         tooltip_html += '<div class="' + _calendarHeatmap2.default.header + '"><strong>' + d.name + '</strong></div><br>';
-        tooltip_html += '<div><strong>' + (d.value ? _this5.formatTime(d.value) : 'No time') + ' tracked</strong></div>';
-        tooltip_html += '<div>on ' + (0, _moment2.default)(date).format('dddd, MMM Do YYYY') + '</div>';
+        tooltip_html += '<div><strong>' + (d.value ? _this5.formatTime(d.value) : 'Aucune données') + ' tracked</strong></div>';
+        tooltip_html += '<div>on ' + (0, _moment2.default)(date).format('dddd, Do MMM YYYY') + '</div>';
 
         // Calculate tooltip position
         var total = parseInt(parentNode.attr('total'));
@@ -1220,7 +1220,7 @@ var CalendarHeatmap = function (_React$Component) {
         // Construct tooltip
         var tooltip_html = '';
         tooltip_html += '<div class="' + _calendarHeatmap2.default.header + '"><strong>' + d.name + '</strong><div><br>';
-        tooltip_html += '<div><strong>' + (d.value ? _this6.formatTime(d.value) : 'No time') + ' tracked</strong></div>';
+        tooltip_html += '<div><strong>' + (d.value ? _this6.formatTime(d.value) : 'Aucune données') + ' tracked</strong></div>';
         tooltip_html += '<div>on ' + (0, _moment2.default)(d.date).format('dddd, MMM Do YYYY HH:mm') + '</div>';
 
         // Calculate tooltip position
@@ -1478,13 +1478,13 @@ var CalendarHeatmap = function (_React$Component) {
       var minutes = Math.floor((seconds - hours * 3600) / 60);
       var time = '';
       if (hours > 0) {
-        time += hours === 1 ? '1 hour ' : hours + ' hours ';
+        time += hours === 1 ? '1 heure ' : hours + ' heures ';
       }
       if (minutes > 0) {
         time += minutes === 1 ? '1 minute' : minutes + ' minutes';
       }
       if (hours === 0 && minutes === 0) {
-        time = Math.round(seconds) + ' seconds';
+        time = Math.round(seconds) + ' secondes';
       }
       return time;
     }
