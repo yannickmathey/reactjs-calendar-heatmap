@@ -188,7 +188,7 @@ var CalendarHeatmap = function (_React$Component) {
       this.buttons = this.svg.append('g');
 
       // Add tooltip to the same element as main svg
-      this.tooltip = d3.select('#calendar-heatmap').append('div').attr('class', _calendarHeatmap2.default.heatmapTooltip).style('opacity', 0).style('pointer-events', 'none').style('position', 'absolute').style('z-index', 9999).style('width', '250px').style('max-width', '500px').style('overflow', 'hidden').style('padding', '15px').style('font-size', '12px').style('line-height', '1.2').style('border-radius', '8px').style('box-shadow', '0 0 10px rgb(151, 151, 151)').style('color', 'rgb(51, 51, 51)').style('background', 'rgba(255, 255, 255, 0.85)');
+      this.tooltip = d3.select('#calendar-heatmap').append('div').attr('class', _calendarHeatmap2.default.heatmapTooltip).style('opacity', 0).style('pointer-events', 'none').style('position', 'absolute').style('z-index', 9999).style('width', '250px').style('max-width', '500px').style('overflow', 'hidden').style('padding', '15px').style('font-size', '12px').style('line-height', '1.2').style('border-radius', '8px').style('box-shadow', '0 0 10px rgb(151, 151, 151)').style('color', 'rgb(51, 51, 51)').style('background', 'rgba(255, 255, 255, .9)');
 
       this.calcDimensions();
     }
@@ -525,9 +525,9 @@ var CalendarHeatmap = function (_React$Component) {
         return d.total;
       });
 
-      var color = d3.scaleLinear().range(['#ffffff', this.props.color]).domain([-0.15, this.props.workingTime * 36 * 36]);
+      var color = d3.scaleLinear().range(['#ffffff', this.props.color]).domain([-0.15, this.props.workingTime * 60 * 60]);
 
-      var overColor = d3.scaleLinear().range([this.props.color, this.props.overColor]).domain([this.props.workingTime * 36 * 36, max_value]);
+      var overColor = d3.scaleLinear().range([this.props.color, this.props.overColor]).domain([this.props.workingTime * 60 * 60, this.props.workingTime * 1.25 * 60 * 60]);
 
       var calcItemX = function calcItemX(d) {
         var date = (0, _moment2.default)(d.date);

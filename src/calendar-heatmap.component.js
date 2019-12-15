@@ -71,7 +71,7 @@ class CalendarHeatmap extends React.Component {
       .style('border-radius', '8px')
       .style('box-shadow', '0 0 10px rgb(151, 151, 151)')
       .style('color', 'rgb(51, 51, 51)')
-      .style('background', 'rgba(255, 255, 255, 0.85)')
+      .style('background', 'rgba(255, 255, 255, .9)')
 
     this.calcDimensions()
   }
@@ -439,11 +439,11 @@ class CalendarHeatmap extends React.Component {
 
     let color = d3.scaleLinear()
       .range(['#ffffff', this.props.color])
-      .domain([-0.15, this.props.workingTime * 36 * 36])
+      .domain([-0.15, this.props.workingTime * 60 * 60])
 
     let overColor = d3.scaleLinear()
       .range([this.props.color, this.props.overColor])
-      .domain([this.props.workingTime * 36 * 36, max_value])
+      .domain([this.props.workingTime * 60 * 60, this.props.workingTime * 1.25 * 60 * 60])
 
     let calcItemX = (d) => {
       let date = moment(d.date)
