@@ -548,7 +548,7 @@ var CalendarHeatmap = function (_React$Component) {
       };
 
       this.items.selectAll('.item-circle').remove();
-      this.items.selectAll('.item-circle').data(year_data).enter().append('rect').attr('class', 'item item-circle').style('cursor', 'default').style('opacity', 0).attr('x', function (d) {
+      this.items.selectAll('.item-circle').data(year_data).enter().append('rect').attr('class', 'item item-circle').style('cursor', 'pointer').style('opacity', 0).style('stroke-width', 1).style('stroke', 'rgb(242, 242, 242)').attr('x', function (d) {
         return calcItemX(d) + (_this3.settings.item_size - calcItemSize(d)) / 2;
       }).attr('y', function (d) {
         return calcItemY(d) + (_this3.settings.item_size - calcItemSize(d)) / 2;
@@ -563,6 +563,9 @@ var CalendarHeatmap = function (_React$Component) {
       }).attr('fill', function (d) {
         return d.total > _this3.props.workingTime * 60 * 60 ? overColor(d.total) : d.total === 0 ? 'transparent' : color(d.total);
       }).on('click', function (d) {
+        var url = window.location.href;
+        url = url.substring(0, url.indexOf('/app/'));
+        window.location = url + '/app/dashboard?from=' + (0, _moment2.default)(d.date).format('YYYY-MM-DD');
         // if (this.in_transition) { return }
         //
         // // Don't transition if there is no data to show

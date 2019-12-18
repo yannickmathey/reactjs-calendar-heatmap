@@ -469,8 +469,10 @@ class CalendarHeatmap extends React.Component {
       .enter()
       .append('rect')
       .attr('class', 'item item-circle')
-      .style('cursor', 'default')
+      .style('cursor', 'pointer')
       .style('opacity', 0)
+      .style('stroke-width', 1)
+      .style('stroke', 'rgb(242, 242, 242)')
       .attr('x', d => {
         return calcItemX(d) + (this.settings.item_size - calcItemSize(d)) / 2
       })
@@ -497,6 +499,9 @@ class CalendarHeatmap extends React.Component {
           color(d.total)
       })
       .on('click', d => {
+        var url = window.location.href;
+        url = url.substring(0, url.indexOf('/app/'));
+        window.location = url + '/app/dashboard?from=' + moment(d.date).format('YYYY-MM-DD');
         // if (this.in_transition) { return }
         //
         // // Don't transition if there is no data to show
