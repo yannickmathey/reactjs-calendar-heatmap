@@ -233,23 +233,23 @@ class CalendarHeatmap extends React.Component {
           color(d.total)
       })
       .on('click', d => {
-        // if (this.in_transition) { return }
-        //
-        // // Set in_transition flag
-        // this.in_transition = true
-        //
-        // // Set selected date to the one clicked on
-        // this.selected = d
-        //
-        // // Hide tooltip
-        // this.hideTooltip()
-        //
-        // // Remove all global overview related items and labels
-        // this.removeGlobalOverview()
-        //
-        // // Redraw the chart
-        // this.overview = 'year'
-        // this.drawChart()
+        if (this.in_transition) { return }
+
+        // Set in_transition flag
+        this.in_transition = true
+
+        // Set selected date to the one clicked on
+        this.selected = d
+
+        // Hide tooltip
+        this.hideTooltip()
+
+        // Remove all global overview related items and labels
+        this.removeGlobalOverview()
+
+        // Redraw the chart
+        this.overview = 'year'
+        this.drawChart()
       })
       .style('opacity', 0)
       .on('mouseover', d => {
@@ -395,23 +395,23 @@ class CalendarHeatmap extends React.Component {
           .style('opacity', 1)
       })
       .on('click', d => {
-        // if (this.in_transition) { return }
-        //
-        // // Set in_transition flag
-        // this.in_transition = true
-        //
-        // // Set selected year to the one clicked on
-        // this.selected = { date: d }
-        //
-        // // Hide tooltip
-        // this.hideTooltip()
-        //
-        // // Remove all global overview related items and labels
-        // this.removeGlobalOverview()
-        //
-        // // Redraw the chart
-        // this.overview = 'year'
-        // this.drawChart()
+        if (this.in_transition) { return }
+
+        // Set in_transition flag
+        this.in_transition = true
+
+        // Set selected year to the one clicked on
+        this.selected = { date: d }
+
+        // Hide tooltip
+        this.hideTooltip()
+
+        // Remove all global overview related items and labels
+        this.removeGlobalOverview()
+
+        // Redraw the chart
+        this.overview = 'year'
+        this.drawChart()
       })
   }
 
@@ -502,25 +502,25 @@ class CalendarHeatmap extends React.Component {
         var url = window.location.href;
         url = url.substring(0, url.indexOf('/app/'));
         window.location = url + '/app/dashboard?from=' + moment(d.date).format('YYYY-MM-DD');
-        // if (this.in_transition) { return }
-        //
-        // // Don't transition if there is no data to show
-        // if (d.total === 0) { return }
-        //
-        // this.in_transition = true
-        //
-        // // Set selected date to the one clicked on
-        // this.selected = d
-        //
-        // // Hide tooltip
-        // this.hideTooltip()
-        //
-        // // Remove all year overview related items and labels
-        // this.removeYearOverview()
-        //
-        // // Redraw the chart
-        // this.overview = 'day'
-        // this.drawChart()
+        if (this.in_transition) { return }
+
+        // Don't transition if there is no data to show
+        if (d.total === 0) { return }
+
+        this.in_transition = true
+
+        // Set selected date to the one clicked on
+        this.selected = d
+
+        // Hide tooltip
+        this.hideTooltip()
+
+        // Remove all year overview related items and labels
+        this.removeYearOverview()
+
+        // Redraw the chart
+        this.overview = 'day'
+        this.drawChart()
       })
       .on('mouseover', d => {
         if (this.in_transition) { return }
@@ -680,30 +680,30 @@ class CalendarHeatmap extends React.Component {
           .style('opacity', 1)
       })
       .on('click', d => {
-        // if (this.in_transition) { return }
-        //
-        // // Check month data
-        // let month_data = this.props.data.filter(e => {
-        //   return moment(d).startOf('month') <= moment(e.date) && moment(e.date) < moment(d).endOf('month')
-        // })
-        //
-        // // Don't transition if there is no data to show
-        // if (!month_data.length) { return }
-        //
-        // // Set selected month to the one clicked on
-        // this.selected = { date: d }
-        //
-        // this.in_transition = true
-        //
-        // // Hide tooltip
-        // this.hideTooltip()
-        //
-        // // Remove all year overview related items and labels
-        // this.removeYearOverview()
-        //
-        // // Redraw the chart
-        // this.overview = 'month'
-        // this.drawChart()
+        if (this.in_transition) { return }
+
+        // Check month data
+        let month_data = this.props.data.filter(e => {
+          return moment(d).startOf('month') <= moment(e.date) && moment(e.date) < moment(d).endOf('month')
+        })
+
+        // Don't transition if there is no data to show
+        if (!month_data.length) { return }
+
+        // Set selected month to the one clicked on
+        this.selected = { date: d }
+
+        this.in_transition = true
+
+        // Hide tooltip
+        this.hideTooltip()
+
+        // Remove all year overview related items and labels
+        this.removeYearOverview()
+
+        // Redraw the chart
+        this.overview = 'month'
+        this.drawChart()
       })
 
     // Add day labels
@@ -827,25 +827,25 @@ class CalendarHeatmap extends React.Component {
       })
       .attr('offset', 0)
       .on('click', d => {
-        // if (this.in_transition) { return }
-        //
-        // // Don't transition if there is no data to show
-        // if (d.total === 0) { return }
-        //
-        // this.in_transition = true
-        //
-        // // Set selected date to the one clicked on
-        // this.selected = d
-        //
-        // // Hide tooltip
-        // this.hideTooltip()
-        //
-        // // Remove all month overview related items and labels
-        // this.removeMonthOverview()
-        //
-        // // Redraw the chart
-        // this.overview = 'day'
-        // this.drawChart()
+        if (this.in_transition) { return }
+
+        // Don't transition if there is no data to show
+        if (d.total === 0) { return }
+
+        this.in_transition = true
+
+        // Set selected date to the one clicked on
+        this.selected = d
+
+        // Hide tooltip
+        this.hideTooltip()
+
+        // Remove all month overview related items and labels
+        this.removeMonthOverview()
+
+        // Redraw the chart
+        this.overview = 'day'
+        this.drawChart()
       })
 
     let item_width = (this.settings.width - this.settings.label_padding) / week_labels.length - this.settings.gutter * 5
@@ -980,30 +980,30 @@ class CalendarHeatmap extends React.Component {
           .style('opacity', 1)
       })
       .on('click', d => {
-        // if (this.in_transition) { return }
-        //
-        // // Check week data
-        // let week_data = this.props.data.filter(e => {
-        //   return d.startOf('week') <= moment(e.date) && moment(e.date) < d.endOf('week')
-        // })
-        //
-        // // Don't transition if there is no data to show
-        // if (!week_data.length) { return }
-        //
-        // this.in_transition = true
-        //
-        // // Set selected month to the one clicked on
-        // this.selected = { date: d }
-        //
-        // // Hide tooltip
-        // this.hideTooltip()
-        //
-        // // Remove all year overview related items and labels
-        // this.removeMonthOverview()
-        //
-        // // Redraw the chart
-        // this.overview = 'week'
-        // this.drawChart()
+        if (this.in_transition) { return }
+
+        // Check week data
+        let week_data = this.props.data.filter(e => {
+          return d.startOf('week') <= moment(e.date) && moment(e.date) < d.endOf('week')
+        })
+
+        // Don't transition if there is no data to show
+        if (!week_data.length) { return }
+
+        this.in_transition = true
+
+        // Set selected month to the one clicked on
+        this.selected = { date: d }
+
+        // Hide tooltip
+        this.hideTooltip()
+
+        // Remove all year overview related items and labels
+        this.removeMonthOverview()
+
+        // Redraw the chart
+        this.overview = 'week'
+        this.drawChart()
       })
 
     // Add day labels
@@ -1118,25 +1118,25 @@ class CalendarHeatmap extends React.Component {
       })
       .attr('offset', 0)
       .on('click', d => {
-        // if (this.in_transition) { return }
-        //
-        // // Don't transition if there is no data to show
-        // if (d.total === 0) { return }
-        //
-        // this.in_transition = true
-        //
-        // // Set selected date to the one clicked on
-        // this.selected = d
-        //
-        // // Hide tooltip
-        // this.hideTooltip()
-        //
-        // // Remove all week overview related items and labels
-        // this.removeWeekOverview()
-        //
-        // // Redraw the chart
-        // this.overview = 'day'
-        // this.drawChart()
+        if (this.in_transition) { return }
+
+        // Don't transition if there is no data to show
+        if (d.total === 0) { return }
+
+        this.in_transition = true
+
+        // Set selected date to the one clicked on
+        this.selected = d
+
+        // Hide tooltip
+        this.hideTooltip()
+
+        // Remove all week overview related items and labels
+        this.removeWeekOverview()
+
+        // Redraw the chart
+        this.overview = 'day'
+        this.drawChart()
       })
 
     let item_width = (this.settings.width - this.settings.label_padding) / week_labels.length - this.settings.gutter * 5
@@ -1398,9 +1398,9 @@ class CalendarHeatmap extends React.Component {
         this.hideTooltip()
       })
       .on('click', d => {
-        // if (!!this.props.handler && typeof this.props.handler == 'function') {
-        //   this.props.handler(d)
-        // }
+        if (!!this.props.handler && typeof this.props.handler == 'function') {
+          this.props.handler(d)
+        }
       })
       .transition()
       .delay(() => {
@@ -1546,29 +1546,29 @@ class CalendarHeatmap extends React.Component {
       .attr('fill', 'transparent')
       .style('opacity', 0)
       .style('stroke-width', 2)
-      .style('display', 'none')
+      .style('display', 'block')
       .style('stroke', 'rgb(170, 170, 170)')
       .on('click', () => {
-        // if (this.in_transition) { return }
-        //
-        // // Set transition boolean
-        // this.in_transition = true
-        //
-        // // Clean the canvas from whichever overview type was on
-        // if (this.overview === 'year') {
-        //   this.removeYearOverview()
-        // } else if (this.overview === 'month') {
-        //   this.removeMonthOverview()
-        // } else if (this.overview === 'week') {
-        //   this.removeWeekOverview()
-        // } else if (this.overview === 'day') {
-        //   this.removeDayOverview()
-        // }
-        //
-        // // Redraw the chart
-        // this.history.pop()
-        // this.overview = this.history.pop()
-        // this.drawChart()
+        if (this.in_transition) { return }
+
+        // Set transition boolean
+        this.in_transition = true
+
+        // Clean the canvas from whichever overview type was on
+        if (this.overview === 'year') {
+          this.removeYearOverview()
+        } else if (this.overview === 'month') {
+          this.removeMonthOverview()
+        } else if (this.overview === 'week') {
+          this.removeWeekOverview()
+        } else if (this.overview === 'day') {
+          this.removeDayOverview()
+        }
+
+        // Redraw the chart
+        this.history.pop()
+        this.overview = this.history.pop()
+        this.drawChart()
       })
     button.append('circle')
       .attr('cx', this.settings.label_padding / 2.25)
