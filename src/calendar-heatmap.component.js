@@ -148,6 +148,14 @@ class CalendarHeatmap extends React.Component {
       this.history.push(this.overview)
     }
 
+    let color = d3.scaleLinear()
+      .range(['#ffffff', this.props.color])
+      .domain([-0.15, this.props.workingTime * 60 * 60])
+
+    let overColor = d3.scaleLinear()
+      .range([this.props.color, this.props.overColor])
+      .domain([this.props.workingTime * 60 * 60, this.props.workingTime * 1.25 * 60 * 60])
+
     // Define start and end of the dataset
     let start = moment(this.props.data[0].date).startOf('year')
     let end = moment(this.props.data[this.props.data.length - 1].date).endOf('year')
@@ -225,7 +233,7 @@ class CalendarHeatmap extends React.Component {
       .attr('transform', d => {
         return 'translate(' + yearScale(d.date.year()) + ',' + this.settings.tooltip_padding * 2 + ')'
       })
-      attr('fill', d => {
+      .attr('fill', d => {
         return d.total > this.props.workingTime * 60 * 60 ?
           overColor(d.total) :
           d.total === 0 ?
@@ -499,28 +507,28 @@ class CalendarHeatmap extends React.Component {
           color(d.total)
       })
       .on('click', d => {
-        var url = window.location.href;
-        url = url.substring(0, url.indexOf('/app/'));
-        window.location = url + '/app/dashboard?from=' + moment(d.date).format('YYYY-MM-DD');
-        if (this.in_transition) { return }
+        if (!!this.props.handler && typeof this.props.handler == 'function') {
+          this.props.handler(d)
+        }
+        // if (this.in_transition) { return }
 
-        // Don't transition if there is no data to show
-        if (d.total === 0) { return }
+        // // Don't transition if there is no data to show
+        // if (d.total === 0) { return }
 
-        this.in_transition = true
+        // this.in_transition = true
 
-        // Set selected date to the one clicked on
-        this.selected = d
+        // // Set selected date to the one clicked on
+        // this.selected = d
 
-        // Hide tooltip
-        this.hideTooltip()
+        // // Hide tooltip
+        // this.hideTooltip()
 
-        // Remove all year overview related items and labels
-        this.removeYearOverview()
+        // // Remove all year overview related items and labels
+        // this.removeYearOverview()
 
-        // Redraw the chart
-        this.overview = 'day'
-        this.drawChart()
+        // // Redraw the chart
+        // this.overview = 'day'
+        // this.drawChart()
       })
       .on('mouseover', d => {
         if (this.in_transition) { return }
@@ -782,6 +790,14 @@ class CalendarHeatmap extends React.Component {
       })
     })
 
+    let color = d3.scaleLinear()
+      .range(['#ffffff', this.props.color])
+      .domain([-0.15, this.props.workingTime * 60 * 60])
+
+    let overColor = d3.scaleLinear()
+      .range([this.props.color, this.props.overColor])
+      .domain([this.props.workingTime * 60 * 60, this.props.workingTime * 1.25 * 60 * 60])
+
     // Define day labels and axis
     let day_labels = d3.timeDays(moment().startOf('week'), moment().endOf('week'))
     let dayScale = d3.scaleBand()
@@ -809,7 +825,7 @@ class CalendarHeatmap extends React.Component {
       .enter()
       .append('g')
       .attr('class', 'item item-block-month')
-      .style('cursor', 'default')
+      .style('cursor', 'pointer')
       .attr('width', () => {
         return (this.settings.width - this.settings.label_padding) / week_labels.length - this.settings.gutter * 5
       })
@@ -827,25 +843,28 @@ class CalendarHeatmap extends React.Component {
       })
       .attr('offset', 0)
       .on('click', d => {
-        if (this.in_transition) { return }
+        if (!!this.props.handler && typeof this.props.handler == 'function') {
+          this.props.handler(d)
+        }
+        // if (this.in_transition) { return }
 
-        // Don't transition if there is no data to show
-        if (d.total === 0) { return }
+        // // Don't transition if there is no data to show
+        // if (d.total === 0) { return }
 
-        this.in_transition = true
+        // this.in_transition = true
 
-        // Set selected date to the one clicked on
-        this.selected = d
+        // // Set selected date to the one clicked on
+        // this.selected = d
 
-        // Hide tooltip
-        this.hideTooltip()
+        // // Hide tooltip
+        // this.hideTooltip()
 
-        // Remove all month overview related items and labels
-        this.removeMonthOverview()
+        // // Remove all month overview related items and labels
+        // this.removeMonthOverview()
 
-        // Redraw the chart
-        this.overview = 'day'
-        this.drawChart()
+        // // Redraw the chart
+        // this.overview = 'day'
+        // this.drawChart()
       })
 
     let item_width = (this.settings.width - this.settings.label_padding) / week_labels.length - this.settings.gutter * 5
@@ -858,7 +877,7 @@ class CalendarHeatmap extends React.Component {
       .enter()
       .append('rect')
       .attr('class', 'item item-block-rect')
-      .style('cursor', 'default')
+      .style('cursor', 'pointer')
       .attr('x', function(d) {
         let total = parseInt(d3.select(this.parentNode).attr('total'))
         let offset = parseInt(d3.select(this.parentNode).attr('offset'))
@@ -874,7 +893,7 @@ class CalendarHeatmap extends React.Component {
       .attr('height', () => {
         return Math.min(dayScale.bandwidth(), this.settings.max_block_height)
       })
-      attr('fill', d => {
+      .attr('fill', d => {
         return d.total > this.props.workingTime * 60 * 60 ?
           overColor(d.total) :
           d.total === 0 ?
@@ -1013,7 +1032,7 @@ class CalendarHeatmap extends React.Component {
       .enter()
       .append('text')
       .attr('class', 'label label-day')
-      .style('cursor', 'default')
+      .style('cursor', 'pointer')
       .style('fill', 'rgb(170, 170, 170)')
       .attr('x', this.settings.label_padding / 3)
       .attr('y', (d, i) => {
@@ -1100,7 +1119,7 @@ class CalendarHeatmap extends React.Component {
       .enter()
       .append('g')
       .attr('class', 'item item-block-week')
-      .style('cursor', 'default')
+      .style('cursor', 'pointer')
       .attr('width', () => {
         return (this.settings.width - this.settings.label_padding) / week_labels.length - this.settings.gutter * 5
       })
@@ -1118,30 +1137,41 @@ class CalendarHeatmap extends React.Component {
       })
       .attr('offset', 0)
       .on('click', d => {
-        if (this.in_transition) { return }
+        if (!!this.props.handler && typeof this.props.handler == 'function') {
+          this.props.handler(d)
+        }
+        // if (this.in_transition) { return }
 
-        // Don't transition if there is no data to show
-        if (d.total === 0) { return }
+        // // Don't transition if there is no data to show
+        // if (d.total === 0) { return }
 
-        this.in_transition = true
+        // this.in_transition = true
 
-        // Set selected date to the one clicked on
-        this.selected = d
+        // // Set selected date to the one clicked on
+        // this.selected = d
 
-        // Hide tooltip
-        this.hideTooltip()
+        // // Hide tooltip
+        // this.hideTooltip()
 
-        // Remove all week overview related items and labels
-        this.removeWeekOverview()
+        // // Remove all week overview related items and labels
+        // this.removeWeekOverview()
 
-        // Redraw the chart
-        this.overview = 'day'
-        this.drawChart()
+        // // Redraw the chart
+        // this.overview = 'day'
+        // this.drawChart()
       })
 
     let item_width = (this.settings.width - this.settings.label_padding) / week_labels.length - this.settings.gutter * 5
     let itemScale = d3.scaleLinear()
       .rangeRound([0, item_width])
+
+    let color = d3.scaleLinear()
+      .range(['#ffffff', this.props.color])
+      .domain([-0.15, this.props.workingTime * 60 * 60])
+
+    let overColor = d3.scaleLinear()
+      .range([this.props.color, this.props.overColor])
+      .domain([this.props.workingTime * 60 * 60, this.props.workingTime * 1.25 * 60 * 60])
 
     let item_gutter = this.settings.item_gutter
     item_block.selectAll('.item-block-rect')
@@ -1149,7 +1179,7 @@ class CalendarHeatmap extends React.Component {
       .enter()
       .append('rect')
       .attr('class', 'item item-block-rect')
-      .style('cursor', 'default')
+      .style('cursor', 'pointer')
       .attr('x', function(d) {
         let total = parseInt(d3.select(this.parentNode).attr('total'))
         let offset = parseInt(d3.select(this.parentNode).attr('offset'))
@@ -1165,7 +1195,7 @@ class CalendarHeatmap extends React.Component {
       .attr('height', () => {
         return Math.min(dayScale.bandwidth(), this.settings.max_block_height)
       })
-      attr('fill', d => {
+      .attr('fill', d => {
         return d.total > this.props.workingTime * 60 * 60 ?
           overColor(d.total) :
           d.total === 0 ?
@@ -1350,7 +1380,7 @@ class CalendarHeatmap extends React.Component {
       .enter()
       .append('rect')
       .attr('class', 'item item-block')
-      .style('cursor', 'default')
+      .style('cursor', 'pointer')
       .attr('x', d => {
         return itemScale(moment(d.date))
       })
