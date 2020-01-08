@@ -274,6 +274,10 @@ var CalendarHeatmap = function (_React$Component) {
         this.history.push(this.overview);
       }
 
+      var color = d3.scaleLinear().range(['#ffffff', this.props.color]).domain([-0.15, this.props.workingTime * 60 * 60]);
+
+      var overColor = d3.scaleLinear().range([this.props.color, this.props.overColor]).domain([this.props.workingTime * 60 * 60, this.props.workingTime * 1.25 * 60 * 60]);
+
       // Define start and end of the dataset
       var start = (0, _moment2.default)(this.props.data[0].date).startOf('year');
       var end = (0, _moment2.default)(this.props.data[this.props.data.length - 1].date).endOf('year');
@@ -339,8 +343,7 @@ var CalendarHeatmap = function (_React$Component) {
         return _this2.settings.height - _this2.settings.label_padding;
       }).attr('transform', function (d) {
         return 'translate(' + yearScale(d.date.year()) + ',' + _this2.settings.tooltip_padding * 2 + ')';
-      });
-      attr('fill', function (d) {
+      }).attr('fill', function (d) {
         return d.total > _this2.props.workingTime * 60 * 60 ? overColor(d.total) : d.total === 0 ? 'transparent' : color(d.total);
       }).on('click', function (d) {
         if (_this2.in_transition) {
@@ -567,32 +570,28 @@ var CalendarHeatmap = function (_React$Component) {
       }).attr('fill', function (d) {
         return d.total > _this3.props.workingTime * 60 * 60 ? overColor(d.total) : d.total === 0 ? 'transparent' : color(d.total);
       }).on('click', function (d) {
-        var url = window.location.href;
-        url = url.substring(0, url.indexOf('/app/'));
-        window.location = url + '/app/dashboard?from=' + (0, _moment2.default)(d.date).format('YYYY-MM-DD');
-        if (_this3.in_transition) {
-          return;
+        if (!!_this3.props.handler && typeof _this3.props.handler == 'function') {
+          _this3.props.handler(d);
         }
+        // if (this.in_transition) { return }
 
-        // Don't transition if there is no data to show
-        if (d.total === 0) {
-          return;
-        }
+        // // Don't transition if there is no data to show
+        // if (d.total === 0) { return }
 
-        _this3.in_transition = true;
+        // this.in_transition = true
 
-        // Set selected date to the one clicked on
-        _this3.selected = d;
+        // // Set selected date to the one clicked on
+        // this.selected = d
 
-        // Hide tooltip
-        _this3.hideTooltip();
+        // // Hide tooltip
+        // this.hideTooltip()
 
-        // Remove all year overview related items and labels
-        _this3.removeYearOverview();
+        // // Remove all year overview related items and labels
+        // this.removeYearOverview()
 
-        // Redraw the chart
-        _this3.overview = 'day';
-        _this3.drawChart();
+        // // Redraw the chart
+        // this.overview = 'day'
+        // this.drawChart()
       }).on('mouseover', function (d) {
         if (_this3.in_transition) {
           return;
@@ -794,6 +793,10 @@ var CalendarHeatmap = function (_React$Component) {
         });
       });
 
+      var color = d3.scaleLinear().range(['#ffffff', this.props.color]).domain([-0.15, this.props.workingTime * 60 * 60]);
+
+      var overColor = d3.scaleLinear().range([this.props.color, this.props.overColor]).domain([this.props.workingTime * 60 * 60, this.props.workingTime * 1.25 * 60 * 60]);
+
       // Define day labels and axis
       var day_labels = d3.timeDays((0, _moment2.default)().startOf('week'), (0, _moment2.default)().endOf('week'));
       var dayScale = d3.scaleBand().rangeRound([this.settings.label_padding, this.settings.height]).domain(day_labels.map(function (d) {
@@ -811,7 +814,7 @@ var CalendarHeatmap = function (_React$Component) {
 
       // Add month data items to the overview
       this.items.selectAll('.item-block-month').remove();
-      var item_block = this.items.selectAll('.item-block-month').data(month_data).enter().append('g').attr('class', 'item item-block-month').style('cursor', 'default').attr('width', function () {
+      var item_block = this.items.selectAll('.item-block-month').data(month_data).enter().append('g').attr('class', 'item item-block-month').style('cursor', 'pointer').attr('width', function () {
         return (_this4.settings.width - _this4.settings.label_padding) / week_labels.length - _this4.settings.gutter * 5;
       }).attr('height', function () {
         return Math.min(dayScale.bandwidth(), _this4.settings.max_block_height);
@@ -822,29 +825,28 @@ var CalendarHeatmap = function (_React$Component) {
       }).attr('date', function (d) {
         return d.date;
       }).attr('offset', 0).on('click', function (d) {
-        if (_this4.in_transition) {
-          return;
+        if (!!_this4.props.handler && typeof _this4.props.handler == 'function') {
+          _this4.props.handler(d);
         }
+        // if (this.in_transition) { return }
 
-        // Don't transition if there is no data to show
-        if (d.total === 0) {
-          return;
-        }
+        // // Don't transition if there is no data to show
+        // if (d.total === 0) { return }
 
-        _this4.in_transition = true;
+        // this.in_transition = true
 
-        // Set selected date to the one clicked on
-        _this4.selected = d;
+        // // Set selected date to the one clicked on
+        // this.selected = d
 
-        // Hide tooltip
-        _this4.hideTooltip();
+        // // Hide tooltip
+        // this.hideTooltip()
 
-        // Remove all month overview related items and labels
-        _this4.removeMonthOverview();
+        // // Remove all month overview related items and labels
+        // this.removeMonthOverview()
 
-        // Redraw the chart
-        _this4.overview = 'day';
-        _this4.drawChart();
+        // // Redraw the chart
+        // this.overview = 'day'
+        // this.drawChart()
       });
 
       var item_width = (this.settings.width - this.settings.label_padding) / week_labels.length - this.settings.gutter * 5;
@@ -853,7 +855,7 @@ var CalendarHeatmap = function (_React$Component) {
       var item_gutter = this.settings.item_gutter;
       item_block.selectAll('.item-block-rect').data(function (d) {
         return d.summary;
-      }).enter().append('rect').attr('class', 'item item-block-rect').style('cursor', 'default').attr('x', function (d) {
+      }).enter().append('rect').attr('class', 'item item-block-rect').style('cursor', 'pointer').attr('x', function (d) {
         var total = parseInt(d3.select(this.parentNode).attr('total'));
         var offset = parseInt(d3.select(this.parentNode).attr('offset'));
         itemScale.domain([0, total]);
@@ -865,8 +867,7 @@ var CalendarHeatmap = function (_React$Component) {
         return Math.max(itemScale(d.value) - item_gutter, 1);
       }).attr('height', function () {
         return Math.min(dayScale.bandwidth(), _this4.settings.max_block_height);
-      });
-      attr('fill', function (d) {
+      }).attr('fill', function (d) {
         return d.total > _this4.props.workingTime * 60 * 60 ? overColor(d.total) : d.total === 0 ? 'fefefe' : color(d.total);
       }).style('opacity', 0).on('mouseover', function (d) {
         if (_this4.in_transition) {
@@ -972,7 +973,7 @@ var CalendarHeatmap = function (_React$Component) {
 
       // Add day labels
       this.labels.selectAll('.label-day').remove();
-      this.labels.selectAll('.label-day').data(day_labels).enter().append('text').attr('class', 'label label-day').style('cursor', 'default').style('fill', 'rgb(170, 170, 170)').attr('x', this.settings.label_padding / 3).attr('y', function (d, i) {
+      this.labels.selectAll('.label-day').data(day_labels).enter().append('text').attr('class', 'label label-day').style('cursor', 'pointer').style('fill', 'rgb(170, 170, 170)').attr('x', this.settings.label_padding / 3).attr('y', function (d, i) {
         return dayScale(i) + dayScale.bandwidth() / 1.75;
       }).style('text-anchor', 'left').attr('font-size', function () {
         return Math.floor(_this4.settings.label_padding / 3) + 'px';
@@ -1041,7 +1042,7 @@ var CalendarHeatmap = function (_React$Component) {
 
       // Add week data items to the overview
       this.items.selectAll('.item-block-week').remove();
-      var item_block = this.items.selectAll('.item-block-week').data(week_data).enter().append('g').attr('class', 'item item-block-week').style('cursor', 'default').attr('width', function () {
+      var item_block = this.items.selectAll('.item-block-week').data(week_data).enter().append('g').attr('class', 'item item-block-week').style('cursor', 'pointer').attr('width', function () {
         return (_this5.settings.width - _this5.settings.label_padding) / week_labels.length - _this5.settings.gutter * 5;
       }).attr('height', function () {
         return Math.min(dayScale.bandwidth(), _this5.settings.max_block_height);
@@ -1052,38 +1053,41 @@ var CalendarHeatmap = function (_React$Component) {
       }).attr('date', function (d) {
         return d.date;
       }).attr('offset', 0).on('click', function (d) {
-        if (_this5.in_transition) {
-          return;
+        if (!!_this5.props.handler && typeof _this5.props.handler == 'function') {
+          _this5.props.handler(d);
         }
+        // if (this.in_transition) { return }
 
-        // Don't transition if there is no data to show
-        if (d.total === 0) {
-          return;
-        }
+        // // Don't transition if there is no data to show
+        // if (d.total === 0) { return }
 
-        _this5.in_transition = true;
+        // this.in_transition = true
 
-        // Set selected date to the one clicked on
-        _this5.selected = d;
+        // // Set selected date to the one clicked on
+        // this.selected = d
 
-        // Hide tooltip
-        _this5.hideTooltip();
+        // // Hide tooltip
+        // this.hideTooltip()
 
-        // Remove all week overview related items and labels
-        _this5.removeWeekOverview();
+        // // Remove all week overview related items and labels
+        // this.removeWeekOverview()
 
-        // Redraw the chart
-        _this5.overview = 'day';
-        _this5.drawChart();
+        // // Redraw the chart
+        // this.overview = 'day'
+        // this.drawChart()
       });
 
       var item_width = (this.settings.width - this.settings.label_padding) / week_labels.length - this.settings.gutter * 5;
       var itemScale = d3.scaleLinear().rangeRound([0, item_width]);
 
+      var color = d3.scaleLinear().range(['#ffffff', this.props.color]).domain([-0.15, this.props.workingTime * 60 * 60]);
+
+      var overColor = d3.scaleLinear().range([this.props.color, this.props.overColor]).domain([this.props.workingTime * 60 * 60, this.props.workingTime * 1.25 * 60 * 60]);
+
       var item_gutter = this.settings.item_gutter;
       item_block.selectAll('.item-block-rect').data(function (d) {
         return d.summary;
-      }).enter().append('rect').attr('class', 'item item-block-rect').style('cursor', 'default').attr('x', function (d) {
+      }).enter().append('rect').attr('class', 'item item-block-rect').style('cursor', 'pointer').attr('x', function (d) {
         var total = parseInt(d3.select(this.parentNode).attr('total'));
         var offset = parseInt(d3.select(this.parentNode).attr('offset'));
         itemScale.domain([0, total]);
@@ -1095,8 +1099,7 @@ var CalendarHeatmap = function (_React$Component) {
         return Math.max(itemScale(d.value) - item_gutter, 1);
       }).attr('height', function () {
         return Math.min(dayScale.bandwidth(), _this5.settings.max_block_height);
-      });
-      attr('fill', function (d) {
+      }).attr('fill', function (d) {
         return d.total > _this5.props.workingTime * 60 * 60 ? overColor(d.total) : d.total === 0 ? 'transparent' : color(d.total);
       }).style('opacity', 0).on('mouseover', function (d) {
         if (_this5.in_transition) {
@@ -1228,7 +1231,7 @@ var CalendarHeatmap = function (_React$Component) {
 
       var itemScale = d3.scaleTime().range([this.settings.label_padding * 2, this.settings.width]).domain([(0, _moment2.default)(this.selected.date).startOf('day'), (0, _moment2.default)(this.selected.date).endOf('day')]);
       this.items.selectAll('.item-block').remove();
-      this.items.selectAll('.item-block').data(this.selected.details).enter().append('rect').attr('class', 'item item-block').style('cursor', 'default').attr('x', function (d) {
+      this.items.selectAll('.item-block').data(this.selected.details).enter().append('rect').attr('class', 'item item-block').style('cursor', 'pointer').attr('x', function (d) {
         return itemScale((0, _moment2.default)(d.date));
       }).attr('y', function (d) {
         return projectScale(d.name) + projectScale.bandwidth() / 2 - 15;
