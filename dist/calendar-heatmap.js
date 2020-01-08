@@ -274,9 +274,9 @@ var CalendarHeatmap = function (_React$Component) {
         this.history.push(this.overview);
       }
 
-      var color = d3.scaleLinear().range(['#ffffff', this.props.color]).domain([-0.15, this.props.workingTime * 60 * 60]);
+      var color = d3.scaleLinear().range(['#ffffff', this.props.color]).domain([-0.15, 1]);
 
-      var overColor = d3.scaleLinear().range([this.props.color, this.props.overColor]).domain([this.props.workingTime * 60 * 60, this.props.workingTime * 1.25 * 60 * 60]);
+      var overColor = d3.scaleLinear().range([this.props.color, this.props.overColor]).domain([-0.15, 1]);
 
       // Define start and end of the dataset
       var start = (0, _moment2.default)(this.props.data[0].date).startOf('year');
@@ -344,7 +344,8 @@ var CalendarHeatmap = function (_React$Component) {
       }).attr('transform', function (d) {
         return 'translate(' + yearScale(d.date.year()) + ',' + _this2.settings.tooltip_padding * 2 + ')';
       }).attr('fill', function (d) {
-        return d.total > _this2.props.workingTime * 60 * 60 ? overColor(d.total) : d.total === 0 ? 'transparent' : color(d.total);
+        var color = d3.scaleLinear().range(['#ffffff', _this2.props.color]).domain([-0.15 * max_value, max_value]);
+        return color(d.total) || '#ff4500';
       }).on('click', function (d) {
         if (_this2.in_transition) {
           return;
@@ -793,9 +794,9 @@ var CalendarHeatmap = function (_React$Component) {
         });
       });
 
-      var color = d3.scaleLinear().range(['#ffffff', this.props.color]).domain([-0.15, this.props.workingTime * 60 * 60]);
+      var color = d3.scaleLinear().range(['#ffffff', this.props.color]).domain([0.15, 1]);
 
-      var overColor = d3.scaleLinear().range([this.props.color, this.props.overColor]).domain([this.props.workingTime * 60 * 60, this.props.workingTime * 1.25 * 60 * 60]);
+      var overColor = d3.scaleLinear().range([this.props.color, this.props.overColor]).domain([1, 2]);
 
       // Define day labels and axis
       var day_labels = d3.timeDays((0, _moment2.default)().startOf('week'), (0, _moment2.default)().endOf('week'));
@@ -868,7 +869,7 @@ var CalendarHeatmap = function (_React$Component) {
       }).attr('height', function () {
         return Math.min(dayScale.bandwidth(), _this4.settings.max_block_height);
       }).attr('fill', function (d) {
-        return d.total > _this4.props.workingTime * 60 * 60 ? overColor(d.total) : d.total === 0 ? 'fefefe' : color(d.total);
+        return d.value > d.estimatedTime ? overColor(d.value / d.estimatedTime) : d.value === 0 ? '#cacaca' : color(d.value / d.estimatedTime);
       }).style('opacity', 0).on('mouseover', function (d) {
         if (_this4.in_transition) {
           return;
@@ -1080,9 +1081,9 @@ var CalendarHeatmap = function (_React$Component) {
       var item_width = (this.settings.width - this.settings.label_padding) / week_labels.length - this.settings.gutter * 5;
       var itemScale = d3.scaleLinear().rangeRound([0, item_width]);
 
-      var color = d3.scaleLinear().range(['#ffffff', this.props.color]).domain([-0.15, this.props.workingTime * 60 * 60]);
+      var color = d3.scaleLinear().range(['#ffffff', this.props.color]).domain([0.15, 1]);
 
-      var overColor = d3.scaleLinear().range([this.props.color, this.props.overColor]).domain([this.props.workingTime * 60 * 60, this.props.workingTime * 1.25 * 60 * 60]);
+      var overColor = d3.scaleLinear().range([this.props.color, this.props.overColor]).domain([1, 2]);
 
       var item_gutter = this.settings.item_gutter;
       item_block.selectAll('.item-block-rect').data(function (d) {
@@ -1100,7 +1101,7 @@ var CalendarHeatmap = function (_React$Component) {
       }).attr('height', function () {
         return Math.min(dayScale.bandwidth(), _this5.settings.max_block_height);
       }).attr('fill', function (d) {
-        return d.total > _this5.props.workingTime * 60 * 60 ? overColor(d.total) : d.total === 0 ? 'transparent' : color(d.total);
+        return d.value > d.estimatedTime ? overColor(d.value / d.estimatedTime) : d.value === 0 ? 'transparent' : color(d.value / d.estimatedTime);
       }).style('opacity', 0).on('mouseover', function (d) {
         if (_this5.in_transition) {
           return;

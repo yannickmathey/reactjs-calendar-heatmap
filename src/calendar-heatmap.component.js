@@ -150,11 +150,11 @@ class CalendarHeatmap extends React.Component {
 
     let color = d3.scaleLinear()
       .range(['#ffffff', this.props.color])
-      .domain([-0.15, this.props.workingTime * 60 * 60])
+      .domain([-0.15, 1])
 
     let overColor = d3.scaleLinear()
       .range([this.props.color, this.props.overColor])
-      .domain([this.props.workingTime * 60 * 60, this.props.workingTime * 1.25 * 60 * 60])
+      .domain([-0.15, 1])
 
     // Define start and end of the dataset
     let start = moment(this.props.data[0].date).startOf('year')
@@ -234,11 +234,10 @@ class CalendarHeatmap extends React.Component {
         return 'translate(' + yearScale(d.date.year()) + ',' + this.settings.tooltip_padding * 2 + ')'
       })
       .attr('fill', d => {
-        return d.total > this.props.workingTime * 60 * 60 ?
-          overColor(d.total) :
-          d.total === 0 ?
-          'transparent' :
-          color(d.total)
+        let color = d3.scaleLinear()
+          .range(['#ffffff', this.props.color])
+          .domain([-0.15 * max_value, max_value])
+        return color(d.total) || '#ff4500'
       })
       .on('click', d => {
         if (this.in_transition) { return }
@@ -792,11 +791,11 @@ class CalendarHeatmap extends React.Component {
 
     let color = d3.scaleLinear()
       .range(['#ffffff', this.props.color])
-      .domain([-0.15, this.props.workingTime * 60 * 60])
+      .domain([0.15, 1])
 
     let overColor = d3.scaleLinear()
       .range([this.props.color, this.props.overColor])
-      .domain([this.props.workingTime * 60 * 60, this.props.workingTime * 1.25 * 60 * 60])
+      .domain([1, 2])
 
     // Define day labels and axis
     let day_labels = d3.timeDays(moment().startOf('week'), moment().endOf('week'))
@@ -894,11 +893,11 @@ class CalendarHeatmap extends React.Component {
         return Math.min(dayScale.bandwidth(), this.settings.max_block_height)
       })
       .attr('fill', d => {
-        return d.total > this.props.workingTime * 60 * 60 ?
-          overColor(d.total) :
-          d.total === 0 ?
-          'fefefe' :
-          color(d.total)
+        return d.value > d.estimatedTime ?
+          overColor(d.value / d.estimatedTime) :
+          d.value === 0 ?
+          '#cacaca' :
+          color(d.value / d.estimatedTime)
       })
       .style('opacity', 0)
       .on('mouseover', d => {
@@ -1167,11 +1166,11 @@ class CalendarHeatmap extends React.Component {
 
     let color = d3.scaleLinear()
       .range(['#ffffff', this.props.color])
-      .domain([-0.15, this.props.workingTime * 60 * 60])
+      .domain([0.15, 1])
 
     let overColor = d3.scaleLinear()
       .range([this.props.color, this.props.overColor])
-      .domain([this.props.workingTime * 60 * 60, this.props.workingTime * 1.25 * 60 * 60])
+      .domain([1, 2])
 
     let item_gutter = this.settings.item_gutter
     item_block.selectAll('.item-block-rect')
@@ -1196,11 +1195,11 @@ class CalendarHeatmap extends React.Component {
         return Math.min(dayScale.bandwidth(), this.settings.max_block_height)
       })
       .attr('fill', d => {
-        return d.total > this.props.workingTime * 60 * 60 ?
-          overColor(d.total) :
-          d.total === 0 ?
+        return d.value > d.estimatedTime ?
+          overColor(d.value / d.estimatedTime) :
+          d.value === 0 ?
           'transparent' :
-          color(d.total)
+          color(d.value / d.estimatedTime)
       })
       .style('opacity', 0)
       .on('mouseover', d => {
